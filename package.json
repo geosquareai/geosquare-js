@@ -1,0 +1,38 @@
+{
+  "name": "geosquare-grid-js",
+  "version": "0.1.0",
+  "description": "A JavaScript library for converting between geographic coordinates and grid identifiers (GIDs) using Turf.js for geospatial operations.",
+  "main": "dist/geosquare-grid.js",
+  "module": "dist/geosquare-grid.js",
+  "scripts": {
+    "build": "rollup -c",
+    "test": "jest",
+    "lint": "eslint src/**/*.js",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "geospatial",
+    "grid",
+    "coordinates",
+    "GID"
+  ],
+  "author": "Geosquare Team",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "turf": "^6.5.0"
+  },
+  "devDependencies": {
+    "babel": "^7.0.0",
+    "eslint": "^7.0.0",
+    "jest": "^26.0.0",
+    "rollup": "^2.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/geosquareai/geosquare-grid-js.git"
+  },
+  "homepage": "https://github.com/geosquareai/geosquare-grid-js#readme",
+  "bugs": {
+    "url": "https://github.com/geosquareai/geosquare-grid-js/issues"
+  }
+}

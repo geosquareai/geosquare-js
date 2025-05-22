@@ -1,0 +1,14 @@
+# Contents of the file: /geosquare-grid-js/geosquare-grid-js/.npmignore
+
+node_modules/
+dist/
+*.log
+*.lock
+*.test.js
+*.spec.js
+coverage/
+examples/
+src/**/*.test.js
+src/utils/**/*.test.js
+src/utils/**/*.spec.js
+```
