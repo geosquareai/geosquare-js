@@ -16,6 +16,7 @@ import {
 
 // Export all functions and the class
 export {
+  GeosquareGrid,
   fromLonLat,
   getBounds,
   polyfill,
@@ -24,6 +25,3 @@ export {
   getGeometry
 
 };
-
-// Also export the GeosquareGrid as default
-export default GeosquareGrid;
