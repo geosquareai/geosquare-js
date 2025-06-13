@@ -1,5 +1,39 @@
-// filepath: geosquare-grid-js/geosquare-grid-js/src/core.js
 import * as turf from '@turf/turf';
+/**
+ * @typedef {Object} GridBounds
+ * @property {[number, number]} west_south - The west and south coordinates [longitude, latitude]
+ * @property {[number, number]} east_north - The east and north coordinates [longitude, latitude]
+ */
+
+/**
+ * @typedef {[number, number, number, number]} BoundingBox - [minLongitude, minLatitude, maxLongitude, maxLatitude]
+ */
+
+/**
+ * @typedef {Object} GeoPolygon
+ * @property {string} type - The type of GeoJSON geometry
+ * @property {Array<Array<[number, number]>>} coordinates - Polygon coordinates
+ */
+
+/**
+ * @typedef {Object} CodeAlphabetMap
+ * @property {Array<string>} grid5 - The full 5x5 grid alphabet flattened
+ * @property {Array<string>} grid2 - The 2x2 grid alphabet subset
+ * @property {Array<string>} c2 - The special c2 grid alphabet subset
+ * @property {Array<string>} c12 - The special c12 grid alphabet subset
+ */
+
+/**
+ * @typedef {Object<string, number>} AlphabetIndex
+ */
+
+/**
+ * @typedef {Object<string, AlphabetIndex>} CodeAlphabetIndexMap
+ */
+
+/**
+ * @typedef {Object<number, number>} SizeLevelMap
+ */
 import { validateCoordinates, validateGID } from './utils/validation';
 
 /**
@@ -9,15 +43,26 @@ import { validateCoordinates, validateGID } from './utils/validation';
  * into compact string identifiers (GIDs) and provides various spatial operations.
  * The grid divides the world into cells of varying resolution levels (1-15), where
  * each level increases the precision of location representation.
+ * @class
  */
 class GeosquareGrid {
+    /**
+     * Creates a new GeosquareGrid instance
+     */
     constructor() {
+        /** @type {number|null} */
         this.longitude = null;
+        /** @type {number|null} */
         this.latitude = null;
+        /** @type {number|null} */
         this.level = null;
+        /** @type {string|null} */
         this.gid = null;
         
-        // Initialize constants
+        /**
+         * Base grid alphabet in 5x5 matrix
+         * @type {Array<Array<string>>}
+         */
         this.CODE_ALPHABET = [
             ["2", "3", "4", "5", "6"],
             ["7", "8", "9", "C", "E"],
@@ -26,7 +71,10 @@ class GeosquareGrid {
             ["T", "V", "W", "X", "Y"],
         ];
         
-        // Pre-compute derived constants for faster lookups
+        /**
+         * Pre-computed derived constants for faster lookups
+         * @type {Object<string, Array<string>>}
+         */
         this.CODE_ALPHABET_ = {
             5: this.CODE_ALPHABET.flat(),
             2: [...this.CODE_ALPHABET[0].slice(0, 2), ...this.CODE_ALPHABET[1].slice(0, 2)],
@@ -48,6 +96,10 @@ class GeosquareGrid {
                 "J"],
         };
         
+        /**
+         * Maps characters to their [row, col] positions in the alphabet matrix
+         * @type {Object<string, Array<number>>}
+         */
         this.CODE_ALPHABET_VALUE = {};
         this.CODE_ALPHABET.forEach((row, rowIdx) => {
             row.forEach((char, colIdx) => {
@@ -55,6 +107,10 @@ class GeosquareGrid {
             });
         });
         
+        /**
+         * Maps alphabet types to indices for characters
+         * @type {Object<string, Object<string, number>>}
+         */
         this.CODE_ALPHABET_INDEX = {};
         for (const [key, values] of Object.entries(this.CODE_ALPHABET_)) {
             this.CODE_ALPHABET_INDEX[key] = {};
@@ -63,7 +119,16 @@ class GeosquareGrid {
             });
         }
         
+        /**
+         * Dimension values for each level
+         * @type {Array<number>}
+         */
         this.d = [5, 2, 5, 2, 5, 2, 5, 2, 5, 2, 5, 2, 5, 2, 5];
+        
+        /**
+         * Mapping between size values and levels
+         * @type {Object<number, number>}
+         */
         this.size_level = {
              10000000: 1,
             5000000: 2,
@@ -149,12 +214,14 @@ class GeosquareGrid {
     /**
      * Get the bounding box for the grid cell identified by the GID.
      * @param {string} gid - Grid identifier.
-     * @returns {Array<number>} - Bounding box [minLongitude, minLatitude, maxLongitude, maxLatitude].
+     * @returns {[number, number, number, number]} - Bounding box [minLongitude, minLatitude, maxLongitude, maxLatitude].
      */
     gidToBound(gid) {
         validateGID(gid);
         
+        /** @type {[number, number]} */
         let lat_ranged = [-216, 233.157642055036];
+        /** @type {[number, number]} */
         let lon_ranged = [-217, 232.157642055036];
     
         for (let idx = 0; idx < gid.length; idx++) {
@@ -167,7 +234,7 @@ class GeosquareGrid {
             lat_ranged = [lat_ranged[0] + shift_y, lat_ranged[0] + shift_y + part_y];
         }
     
-        return [lon_ranged[0], lat_ranged[0], lon_ranged[1], lat_ranged[1]];
+        return /** @type {[number, number, number, number]} */ ([lon_ranged[0], lat_ranged[0], lon_ranged[1], lat_ranged[1]]);
     }
 
     /**
@@ -219,7 +286,7 @@ class GeosquareGrid {
 
     /**
      * Get the longitude and latitude coordinates for this grid cell.
-     * @returns {Array<number>} - A tuple containing [longitude, latitude]
+     * @returns {[number, number]} - A tuple containing [longitude, latitude]
      */
     getLonlat() {
         if (this.longitude === null || this.latitude === null) {
@@ -233,24 +300,32 @@ class GeosquareGrid {
 
     /**
      * Get the geographic boundary of the current grid cell.
-     * @returns {Array<number>} - The bounding coordinates [west, south, east, north].
+     * @returns {[number, number, number, number]} - The bounding coordinates [west, south, east, north].
+     * @throws {Error} - If gid is not set
      */
     getBound() {
+        if (this.gid === null) {
+            throw new Error("Cannot get bounds without GID");
+        }
         return this.gidToBound(this.gid);
     }
 
     /**
      * Returns the polygon geometry of this grid cell.
-     * @returns {Object} - The polygon geometry as a GeoJSON object.
+     * @returns {turf.Feature<turf.Polygon>} - The polygon geometry as a GeoJSON object.
+     * @throws {Error} - If gid is not set
      */
     getGeometry() {
+        if (this.gid === null) {
+            throw new Error("Cannot get geometry without GID");
+        }
         return this.gidToGeometry(this.gid);
     }
 
     /**
      * Converts a grid ID to its corresponding polygon geometry.
      * @param {string} gid - The grid identifier to convert to a geometry.
-     * @returns {Object} - A GeoJSON polygon geometry representing the grid cell.
+     * @returns {turf.Feature<turf.Polygon>} - A GeoJSON polygon geometry representing the grid cell.
      */
     gidToGeometry(gid) {
         const bounds = this.gidToBound(gid);
@@ -265,8 +340,8 @@ class GeosquareGrid {
 
     /**
      * Calculate the ratio of the intersection area between two shapes to the area of the first shape.
-     * @param {Object} a - First GeoJSON geometry object.
-     * @param {Object} b - Second GeoJSON geometry object.
+     * @param {turf.Feature<turf.Polygon|turf.MultiPolygon>} a - First GeoJSON geometry object.
+     * @param {turf.Feature<turf.Polygon|turf.MultiPolygon>} b - Second GeoJSON geometry object.
      * @returns {number} - The area ratio (0.0 to 1.0).
      */
     _areaRatio(a, b) {
@@ -296,7 +371,7 @@ class GeosquareGrid {
 
     /**
      * Find grid cell keys contained within a specified geometry.
-     * @param {Object} geometry - GeoJSON polygon geometry.
+     * @param {turf.Feature<turf.Polygon|turf.MultiPolygon>} geometry - GeoJSON polygon geometry.
      * @param {string} initialKey - Starting grid key.
      * @param {Array<number>} resolution - [min_resolution, max_resolution] array.
      * @param {boolean} fullcover - Whether to include only fully contained cells.
@@ -304,48 +379,62 @@ class GeosquareGrid {
      */
     _getContainedKeys(geometry, initialKey, resolution, fullcover = true) {
         if (initialKey !== "2") {
-            geometry = turf.intersect(geometry, this.gidToGeometry(initialKey));
-            if (!geometry) return [];
+            const intersection = turf.intersect(geometry, this.gidToGeometry(initialKey));
+            if (!intersection) return [];
+            geometry = intersection;
         }
         
+        /** @type {Array<string>} */
         const containedKeys = [];
         
+        /**
+         * @typedef {Object} ProcessKeyOptions
+         * @property {string} key - The key being processed
+         * @property {boolean} approved - Whether the key is pre-approved
+         */
+
+        /**
+         * Process a key recursively to find contained cells
+         * @param {string} key - The key to process
+         * @param {boolean} approved - Whether the key is pre-approved
+         * @returns {void}
+         */
         const processKey = (key, approved) => {
             if (approved) {
-                if (key.length >= resolution[0] && key.length <= resolution[1]) {
-                    containedKeys.push(key);
-                } else {
-                    this._toChildren(key).forEach(childKey => {
-                        processKey(childKey, true);
-                    });
-                }
+            if (key.length >= resolution[0] && key.length <= resolution[1]) {
+                containedKeys.push(key);
             } else {
-                const cellGeom = this.gidToGeometry(key);
-                const areaRatio = this._areaRatio(cellGeom, geometry);
-                
-                if (areaRatio === 0) {
-                    if (key.length === 1) {
-                        const lastChar = key[key.length - 1];
-                        const lastIdx = this.CODE_ALPHABET_[this.d[0]].indexOf(lastChar);
-                        if (lastIdx < 25) {
-                            const nextChar = this.CODE_ALPHABET_[this.d[0]][lastIdx + 1];
-                            processKey(key.slice(0, -1) + nextChar, false);
-                        }
-                    }
-                    return;
-                } else if (areaRatio === 1) {
-                    processKey(key, true);
-                } else if (key.length === resolution[1] && fullcover) {
-                    containedKeys.push(key);
-                } else if (key.length === resolution[1] && areaRatio > 0.5 && !fullcover) {
-                    containedKeys.push(key);
-                } else if (key.length === resolution[1]) {
-                    return;
-                } else {
-                    this._toChildren(key).forEach(childKey => {
-                        processKey(childKey, false);
-                    });
+                this._toChildren(key).forEach(childKey => {
+                processKey(childKey, true);
+                });
+            }
+            } else {
+            const cellGeom = this.gidToGeometry(key);
+            const areaRatio = this._areaRatio(cellGeom, geometry);
+            
+            if (areaRatio === 0) {
+                if (key.length === 1) {
+                const lastChar = key[key.length - 1];
+                const lastIdx = this.CODE_ALPHABET_[this.d[0]].indexOf(lastChar);
+                if (lastIdx < 25) {
+                    const nextChar = this.CODE_ALPHABET_[this.d[0]][lastIdx + 1];
+                    processKey(key.slice(0, -1) + nextChar, false);
                 }
+                }
+                return;
+            } else if (areaRatio === 1) {
+                processKey(key, true);
+            } else if (key.length === resolution[1] && fullcover) {
+                containedKeys.push(key);
+            } else if (key.length === resolution[1] && areaRatio > 0.5 && !fullcover) {
+                containedKeys.push(key);
+            } else if (key.length === resolution[1]) {
+                return;
+            } else {
+                this._toChildren(key).forEach(childKey => {
+                processKey(childKey, false);
+                });
+            }
             }
         };
         
@@ -357,7 +446,7 @@ class GeosquareGrid {
      * Generates all child grid identifiers at a specified resolution level from a parent GID.
      * @param {string} key - The parent grid identifier (GID).
      * @param {number} size - The target size parameter for resolution level.
-     * @param {Object} geometry - Optional GeoJSON geometry to filter cells.
+     * @param {turf.Feature<turf.Polygon|turf.MultiPolygon>|null} geometry - Optional GeoJSON geometry to filter cells.
      * @returns {Array<string>} - List of child grid identifiers.
      */
     parrentToAllchildren(key, size, geometry = null) {
@@ -377,6 +466,8 @@ class GeosquareGrid {
         
         while (queue.length > 0) {
             const currentKey = queue.shift();
+            
+            if (!currentKey) continue;
             
             if (currentKey.length === resolution) {
                 if (geometry !== null) {
@@ -400,13 +491,14 @@ class GeosquareGrid {
 
     /**
      * Find all grid cells that intersect with a given polygon.
-     * @param {Object} polygon - GeoJSON polygon object.
+     * @param {turf.Feature<turf.Polygon|turf.MultiPolygon>} polygon - GeoJSON polygon object.
      * @param {number|Array<number>} size - Size level or range [min, max].
-     * @param {string} start - Starting cell identifier.
-     * @param {boolean} fullcover - Whether to include only fully contained cells.
+     * @param {string} [start="2"] - Starting cell identifier.
+     * @param {boolean} [fullcover=true] - Whether to include only fully contained cells.
      * @returns {Array<string>} - List of grid identifiers that intersect with the polygon.
      */
     polyfill(polygon, size, start = "2", fullcover = true) {
+        /** @type {[number, number]} */
         let resolution;
         
         if (Array.isArray(size)) {

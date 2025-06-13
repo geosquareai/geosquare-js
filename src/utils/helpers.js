@@ -59,7 +59,7 @@ function getBounds(gid) {
 
 /**
  * Find all grid cells that intersect with a given polygon
- * @param {Object} polygon - GeoJSON polygon object
+ * @param {import('@turf/turf').Feature<import('@turf/turf').Polygon | import('@turf/turf').MultiPolygon, import('@turf/turf').Properties>} polygon - GeoJSON polygon object
  * @param {number|Array<number>} size - Size level or range [min, max]
  * @param {string} start - Starting cell identifier
  * @param {boolean} fullcover - Whether to include only fully contained cells

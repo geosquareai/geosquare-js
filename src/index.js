@@ -1,3 +1,8 @@
+/**
+ * Geosquare Grid library
+ * Main entry point
+ */
+
 import GeosquareGrid from './core';
 import {
   fromLonLat,
@@ -7,10 +12,7 @@ import {
   polyfill,
   getGeometry
 } from './utils/helpers';
-//  * Polyfill for older browsers
-if (typeof window !== 'undefined') {
-  window.GeosquareGrid = GeosquareGrid;
-}
+
 
 // Export all functions and the class
 export {
