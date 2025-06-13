@@ -104,7 +104,7 @@ for (let level = 1; level <= 5; level++) {
 
 ## Grid Cell Resolution Reference
 
-| Size     | Level | Approximate Cell Dimensions |
+| Size (meter) | Level | Approximate Cell Dimensions |
 |----------|-------|----------------------------|
 | 10000000 | 1     | Country-sized              |
 | 1000000  | 3     | Large region               |
