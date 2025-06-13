@@ -3,16 +3,9 @@ logs
 *.log
 pnpm-debug.log*
 
-.changeset
-.github
-src
-scripts
+dist
 node_modules
-tsconfig.json
-tsup.config.ts
-biome.json
 .turbo
-turbo.json
 *.local
 
 # Editor directories and files
