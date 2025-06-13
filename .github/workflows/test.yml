@@ -16,5 +16,7 @@ jobs:
           node-version: '16.x'
           cache: 'npm'
       - run: npm ci
+      - name: Install ESLint plugins
+        run: npm install --save-dev eslint-plugin-import eslint-plugin-node eslint-plugin-promise
       - run: npm run lint
       - run: npm test
