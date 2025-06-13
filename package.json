@@ -1,14 +1,20 @@
 {
-  "name": "geosquare-grid-js",
+  "name": "geosquare-grid",
   "version": "0.1.0",
   "description": "A JavaScript library for converting between geographic coordinates and grid identifiers (GIDs) using Turf.js for geospatial operations.",
   "main": "dist/geosquare-grid.js",
   "module": "dist/geosquare-grid.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "rollup -c",
     "test": "jest",
     "lint": "eslint src/**/*.js",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build && npm test"
   },
   "keywords": [
     "geospatial",
@@ -19,13 +25,20 @@
   "author": "Geosquare Team",
   "license": "Apache-2.0",
   "dependencies": {
-    "turf": "^6.5.0"
+    "@turf/turf": "^6.5.0",
+    "@babel/runtime": "^7.16.0"
   },
   "devDependencies": {
-    "babel": "^7.0.0",
+    "@babel/core": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/plugin-transform-runtime": "^7.16.0",
     "eslint": "^7.0.0",
     "jest": "^26.0.0",
-    "rollup": "^2.0.0"
+    "rollup": "^2.0.0",
+    "@rollup/plugin-node-resolve": "^13.0.0",
+    "@rollup/plugin-commonjs": "^20.0.0",
+    "@rollup/plugin-babel": "^5.3.0",
+    "rollup-plugin-terser": "^7.0.2"
   },
   "repository": {
     "type": "git",

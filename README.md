@@ -1,18 +1,8 @@
-# Geosquare Grid JS
+# Geosquare Grid
 
-Geosquare Grid JS is a JavaScript library that provides methods for converting between geographic coordinates (longitude and latitude) and grid identifiers (GIDs). It also includes functionality for spatial operations and geometry handling using Turf.js, making it a useful tool for geospatial analysis and mapping applications.
-
-## Features
-
-- Convert longitude/latitude to GID and vice versa.
-- Retrieve bounds for grid cells.
-- Get geometries for grid cells.
-- Find all grid cells that overlap with specified geometries.
-- Easy integration with mapping libraries for geospatial applications.
+A JavaScript library for converting between geographic coordinates and grid identifiers (GIDs) using Turf.js for geospatial operations.
 
 ## Installation
-
-You can install the Geosquare Grid library using npm:
 
 ```bash
 npm install geosquare-grid
@@ -20,91 +10,35 @@ npm install geosquare-grid
 
 ## Usage
 
-Here is a simple example of how to use the Geosquare Grid library:
-
 ```javascript
-import { GeosquareGrid } from 'geosquare-grid';
+// ES Modules
+import GeosquareGrid, { fromLonLat, lonlatToGID } from 'geosquare-grid';
 
-// Initialize the GeosquareGrid object
+// Convert coordinates to GID
+const gid = lonlatToGID(longitude, latitude, level);
+
+// Create a grid instance from coordinates
+const grid = fromLonLat(longitude, latitude, level);
+
+// Or directly using the class
 const grid = new GeosquareGrid();
-
-// Convert longitude and latitude to GID
-const gid = grid.lonlatToGid(106.8938638928753022, -6.2608983083383016, 5);
-console.log(`GID: ${gid}`);
-
-// Convert GID back to longitude and latitude
-const { longitude, latitude } = grid.gidToLonlat(gid);
-console.log(`Longitude: ${longitude}, Latitude: ${latitude}`);
-
-// Get bounds for the grid cell
-const bounds = grid.getBounds(gid);
-console.log(`Bounds: ${JSON.stringify(bounds)}`);
+grid.fromLonlat(longitude, latitude, level);
 ```
 
-## Methods
+## API Documentation
 
-### `lonlatToGid`
-Converts geographic coordinates to a geospatial grid identifier (GID).
+### Core Functions
 
-**Parameters:**
-- `longitude` (float): Longitude in decimal degrees (-180 to 180).
-- `latitude` (float): Latitude in decimal degrees (-90 to 90).
-- `level` (int): Precision level (1-15).
+- `lonlatToGID(longitude, latitude, level)`: Convert coordinates to GID
+- `GIDToLonlat(gid)`: Convert GID to coordinates
+- `getBounds(gid)`: Get the bounding box for a GID
+- `polyfill(polygon, size, start, fullcover)`: Get grid cells that intersect with a polygon
+- `getGeometry(gid)`: Get the GeoJSON geometry for a GID
 
-**Returns:**
-- `string`: Grid identifier.
+### GeosquareGrid Class
 
----
-
-### `gidToLonlat`
-Converts a grid ID to geographic coordinates.
-
-**Parameters:**
-- `gid` (string): Grid identifier.
-
-**Returns:**
-- `Object`: An object containing `longitude` and `latitude` of the grid cell's lower-left corner.
-
----
-
-### `gidToBound`
-Converts a grid ID to its geographical bounds.
-
-**Parameters:**
-- `gid` (string): Grid identifier.
-
-**Returns:**
-- `Array`: Bounding box `[min_longitude, min_latitude, max_longitude, max_latitude]`.
-
----
-
-### `getBounds`
-Returns the geographic boundary of the grid cell.
-
-**Parameters:**
-- `gid` (string): Grid identifier.
-
-**Returns:**
-- `Array`: Bounding box `[min_longitude, min_latitude, max_longitude, max_latitude]`.
-
----
-
-### `polyfill`
-Finds all grid cells that intersect with a polygon.
-
-**Parameters:**
-- `geometry` (Object): Polygon geometry to fill.
-- `size` (number | Array<number>): Grid cell size or range of sizes.
-- `start` (string): Starting cell identifier (default: "2").
-- `fullcover` (boolean): If `true`, only fully contained cells are returned.
-
-**Returns:**
-- `Array<string>`: List of grid cell identifiers.
-
-## Documentation
-
-For more detailed documentation, including advanced usage and API reference, please refer to the [docs](docs/index.rst).
+The main class providing all grid functionality.
 
 ## License
 
-This project is licensed under the Apache License 2.0. See the LICENSE file for more details.
+Apache-2.0

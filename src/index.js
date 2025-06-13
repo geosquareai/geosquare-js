@@ -1,15 +1,27 @@
-// filepath: geosquare-grid-js/geosquare-grid-js/src/index.js
-import { fromLonLat, toGid, fromGid, getBounds, polyfill } from './core';
-import { validateCoordinates, validateGid } from './utils/validation';
-import { calculateGeometry } from './utils/geometry';
+import GeosquareGrid from './core';
+import {
+  fromLonLat,
+  lonlatToGID,
+  GIDToLonlat,
+  getBounds,
+  polyfill,
+  getGeometry
+} from './utils/helpers';
+//  * Polyfill for older browsers
+if (typeof window !== 'undefined') {
+  window.GeosquareGrid = GeosquareGrid;
+}
 
+// Export all functions and the class
 export {
-    fromLonLat,
-    toGid,
-    fromGid,
-    getBounds,
-    polyfill,
-    validateCoordinates,
-    validateGid,
-    calculateGeometry
+  fromLonLat,
+  getBounds,
+  polyfill,
+  lonlatToGID,
+  GIDToLonlat,
+  getGeometry
+
 };
+
+// Also export the GeosquareGrid as default
+export default GeosquareGrid;
