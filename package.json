@@ -1,5 +1,5 @@
 {
-  "name": "geosquare-grid",
+  "name": "geosquare",
   "version": "1.0.0",
   "description": "A JavaScript library for converting between geographic coordinates and grid identifiers (GIDs) using Turf.js for geospatial operations.",
   "main": "dist/index.js",
@@ -42,10 +42,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/geosquareai/geosquare-grid-js.git"
+    "url": "https://github.com/geosquareai/geosquare-js.git"
   },
-  "homepage": "https://github.com/geosquareai/geosquare-grid-js#readme",
+  "homepage": "https://github.com/geosquareai/geosquare-js#readme",
   "bugs": {
-    "url": "https://github.com/geosquareai/geosquare-grid-js/issues"
+    "url": "https://github.com/geosquareai/geosquare-js/issues"
   }
 }

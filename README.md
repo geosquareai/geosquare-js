@@ -5,7 +5,7 @@ A JavaScript library for converting between geographic coordinates and grid iden
 ## Installation
 
 ```bash
-npm install geosquare-grid
+npm install geosquare
 ```
 
 ## Basic Usage
@@ -14,10 +14,10 @@ npm install geosquare-grid
 
 ```javascript
 // ES Modules
-import { GeosquareGrid } from 'geosquare-grid';
+import { GeosquareGrid } from 'geosquare';
 
 // CommonJS
-const { GeosquareGrid } = require('geosquare-grid');
+const { GeosquareGrid } = require('geosquare');
 ```
 
 ### Converting coordinates to GID

@@ -1,4 +1,3 @@
-// filepath: geosquare-grid-js/examples/basic-usage.js
 import { GeosquareGrid } from '../src/index.js';
 
 // Initialize the GeosquareGrid object

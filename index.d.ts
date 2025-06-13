@@ -1,4 +1,4 @@
-declare module 'geosquare-grid' {
+declare module 'geosquare' {
   export class GeosquareGrid {
     constructor();
     lonlatToGID(longitude: number, latitude: number, level: number): string;

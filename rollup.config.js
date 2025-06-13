@@ -8,7 +8,7 @@ export default {
   output: [
     // UMD build for browsers and CDNs
     {
-      file: 'dist/geosquare-grid.js',
+      file: 'dist/geosquare.js',
       format: 'umd',
       name: 'GeosquareGrid',
       sourcemap: true,
@@ -18,7 +18,7 @@ export default {
     },
     // Minified UMD build
     {
-      file: 'dist/geosquare-grid.min.js',
+      file: 'dist/geosquare.min.js',
       format: 'umd',
       name: 'GeosquareGrid',
       sourcemap: true,
@@ -29,7 +29,7 @@ export default {
     },
     // ESM build for modern environments
     {
-      file: 'dist/geosquare-grid.esm.js',
+      file: 'dist/geosquare.esm.js',
       format: 'esm',
       sourcemap: true
     }
