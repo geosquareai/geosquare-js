@@ -138,4 +138,4 @@ for (let level = 1; level <= 5; level++) {
 
 ## License
 
-Apache-2.0
+ GPL-3.0 license
