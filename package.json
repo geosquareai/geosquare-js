@@ -1,6 +1,6 @@
 {
   "name": "geosquare",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "A JavaScript library for converting between geographic coordinates and grid identifiers (GIDs) using Turf.js for geospatial operations.",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
