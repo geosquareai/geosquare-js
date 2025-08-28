@@ -50,6 +50,11 @@ jobs:
         with:
           name: dist
           path: dist/
+      - name: Set package.json version from tag
+        run: |
+          TAG_VERSION="${GITHUB_REF#refs/tags/v}"
+          echo "Tag version: $TAG_VERSION"
+          npm version --no-git-tag-version "$TAG_VERSION"
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
